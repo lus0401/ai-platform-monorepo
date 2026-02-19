@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "jQsLiRSsSL+1SGdLMVG4gKAEnMXBTnKpyLqPtHE5WVE=",
+  "Source": "platform-api",
+  "BasePath": "_content/platform-api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
