@@ -1,6 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Platform.Infrastructure.Persistence;
 
+using Platform.Application.Abstractions;
+using Platform.Application.Dtos;
+using Platform.Application.Services;
+
+using Platform.Infrastructure.Persistence.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // -----------------------------
@@ -8,6 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 // -----------------------------
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// -----------------------------
+// DI 등록 (PostgreSQL)
+// -----------------------------
+builder.Services.AddScoped<IDatasetRepository, DatasetRepository>();
+builder.Services.AddScoped<DatasetService>();
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -32,7 +44,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" }))
    .WithOpenApi();
 
 // -----------------------------
-// DB 연결 검증용 엔드포인트
+// DB 연결 검증용 API
 // -----------------------------
 app.MapGet("/db-check", async (ApplicationDbContext db) =>
 {
@@ -56,6 +68,36 @@ app.MapGet("/db-check", async (ApplicationDbContext db) =>
 })
 .WithName("DbCheck")
 .WithOpenApi();
+
+
+// -----------------------------
+// Dataset APIs
+// -----------------------------
+app.MapPost("/datasets", async (CreateDatasetRequest req, DatasetService svc) =>
+{
+    var created = await svc.CreateAsync(req);
+    return Results.Created($"/datasets/{created.Id}", created);
+})
+.WithName("CreateDataset")
+.WithOpenApi();
+
+app.MapGet("/datasets", async (DatasetService svc) =>
+{
+    var items = await svc.ListAsync();
+    return Results.Ok(items);
+})
+.WithName("ListDatasets")
+.WithOpenApi();
+
+app.MapGet("/datasets/{id:guid}", async (Guid id, DatasetService svc) =>
+{
+    var item = await svc.GetAsync(id);
+    return item is null ? Results.NotFound() : Results.Ok(item);
+})
+.WithName("GetDatasetById")
+.WithOpenApi();
+
+
 
 // -----------------------------
 // 기본 샘플 엔드포인트
