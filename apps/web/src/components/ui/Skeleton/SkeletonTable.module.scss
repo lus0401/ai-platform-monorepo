@@ -1,0 +1,50 @@
+.skeletonTable {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-primary);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    tr {
+      border-bottom: 2px solid var(--color-border-primary);
+    }
+
+    th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      background-color: var(--color-bg-tertiary);
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid var(--color-border-primary);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 0.875rem 1rem;
+    }
+  }
+}
+
+// 반응형
+@media (max-width: 768px) {
+  .table {
+    thead th,
+    tbody td {
+      padding: 0.625rem 0.75rem;
+    }
+  }
+}
+

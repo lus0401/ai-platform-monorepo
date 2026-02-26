@@ -1,0 +1,12 @@
+.appMain {
+  flex: 1;
+  overflow: auto;
+  background-color: var(--color-bg-primary);
+  height: calc(100vh - 64px);
+}
+
+.mainContent {
+  padding: 1.5rem;
+  min-height: 100%;
+}
+

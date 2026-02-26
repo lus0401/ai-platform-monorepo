@@ -1,0 +1,238 @@
+/* ============================================
+ * Theme Tokens - Light & Dark Mode
+ * 시맨틱 변수 정의 (colors.css의 기본 팔레트 참조)
+ * ============================================ */
+
+[data-theme="light"] {
+  /* ========== 배경 (Background) ========== */
+  --color-bg-base: var(--white);
+  --color-bg-primary: var(--neutrals-50);
+  --color-bg-secondary: var(--neutrals-100);
+  --color-bg-tertiary: var(--white);
+  --color-bg-elevated: var(--white);
+  --color-bg-subtle: var(--neutrals-200);
+  --color-bg-muted: var(--neutrals-100);
+  --color-bg-inverse: var(--neutrals-900);
+  --color-bg-content-wrapper: #f0f3f9;
+  --color-bg-content: var(--white);
+  --color-bg-page: var(--neutrals-50);
+
+  /* 특정 컴포넌트 배경 */
+  --color-bg-sidebar: var(--neutrals-950);
+  --color-bg-sidebar-item-selected: var(--neutrals-100);
+  --color-bg-header: var(--white);
+  --color-bg-card: var(--neutrals-50);
+  --color-bg-modal: var(--neutrals-100);
+  --color-bg-modal-header: var(--neutrals-900);
+  --color-bg-input: var(--white);
+  --color-bg-hover: var(--neutrals-100);
+  --color-bg-active: var(--neutrals-200);
+  --color-bg-toggle-inactive: var(--neutrals-300);
+
+  /* 상태별 배경 */
+  --color-bg-success: var(--success-50);
+  --color-bg-warning: var(--warning-50);
+  --color-bg-error: var(--error-50);
+  --color-bg-info: var(--info-50);
+
+  /* 테이블 배경 */
+  --color-table-header-bg: var(--neutrals-100);
+  --color-table-row-bg: var(--white);
+  --color-table-row-hover: var(--neutrals-50);
+  --color-table-row-selected: var(--primary-50);
+
+  /* ========== 텍스트 (Text) ========== */
+  --color-text-primary: var(--neutrals-900);
+  --color-text-secondary: var(--neutrals-600);
+  --color-text-tertiary: var(--neutrals-400);
+  --color-text-muted: var(--neutrals-500);
+  --color-text-inverse: var(--white);
+  --color-text-link: var(--primary-500);
+  --color-text-link-hover: var(--primary-600);
+  --color-text-header-btn: var(--neutrals-700);
+  --color-bg-header-btn-active: var(--primary-op-01);
+  --color-text-sidebar-menu: var(--neutrals-800);
+
+  /* 상태별 텍스트 */
+  --color-text-success: var(--success-600);
+  --color-text-warning: var(--warning-600);
+  --color-text-error: var(--error-600);
+  --color-text-info: var(--info-600);
+
+  /* ========== 테두리 (Border) ========== */
+  --color-border-primary: var(--neutrals-200);
+  --color-border-secondary: var(--neutrals-100);
+  --color-border-header: var(--neutrals-200);
+  --color-border-sidebar: var(--neutrals-100);
+  --color-border-focus: var(--primary-400);
+  --color-border-error: var(--error-500);
+  --color-border-success: var(--success-500);
+  --color-border-warning: var(--warning-500);
+
+  /* ========== 버튼 (Button) ========== */
+  --color-btn-primary: var(--primary-500);
+  --color-btn-primary-hover: var(--primary-600);
+  --color-btn-secondary: var(--neutrals-200);
+  --color-btn-secondary-hover: var(--neutrals-300);
+  --color-btn-success: var(--success-500);
+  --color-btn-danger: var(--error-500);
+  --color-btn-warning: var(--warning-500);
+
+  /* ========== 인풋 (Input) ========== */
+  --color-input-border: var(--neutrals-300);
+  --color-input-focus: var(--primary-500);
+  --color-input-disabled: var(--neutrals-100);
+  --color-input-placeholder: var(--neutrals-400);
+
+  /* ========== 상태 색상 (Status) ========== */
+  --color-success: var(--success-500);
+  --color-info: var(--info-500);
+  --color-warning: var(--warning-500);
+  --color-danger: var(--error-500);
+
+  /* ========== 그림자 (Shadow) ========== */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  /* ========== 오버레이 (Overlay) ========== */
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-backdrop: rgba(0, 0, 0, 0.1);
+  --color-focus-ring: rgba(66, 209, 166, 0.15);
+  --color-error-ring: rgba(234, 84, 85, 0.15);
+  --color-wave-highlight: rgba(255, 255, 255, 0.4);
+
+  /* ========== 차트 (Chart) ========== */
+  --color-chart-primary: var(--primary-500);
+  --color-chart-secondary: var(--neutrals-500);
+  --color-chart-success: var(--success-500);
+  --color-chart-warning: var(--warning-500);
+  --color-chart-danger: var(--error-500);
+  --color-chart-info: var(--info-500);
+
+  /* ========== 프로그레스 (Progress) ========== */
+  --color-progress-track: var(--neutrals-200);
+  --color-progress-fill: var(--primary-500);
+  --color-progress-success: var(--success-500);
+  --color-progress-warning: var(--warning-500);
+  --color-progress-danger: var(--error-500);
+}
+
+[data-theme="dark"] {
+  /* ========== 배경 (Background) ========== */
+  --color-bg-base: var(--neutrals-950);
+  --color-bg-primary: var(--neutrals-950);
+  --color-bg-secondary: var(--neutrals-900);
+  --color-bg-tertiary: var(--neutrals-800);
+  --color-bg-elevated: var(--neutrals-800);
+  --color-bg-subtle: var(--neutrals-700);
+  --color-bg-muted: var(--neutrals-800);
+  --color-bg-inverse: var(--neutrals-100);
+  --color-bg-content-wrapper: #080B10;
+  --color-bg-content: #131D2F;
+  --color-bg-page: #131D2F;
+
+  /* 특정 컴포넌트 배경 */
+  --color-bg-sidebar: var(--neutrals-900);
+  --color-bg-sidebar-item-selected: var(--neutrals-900);
+  --color-bg-header: #131D2F;
+  --color-bg-card: var(--neutrals-900);
+  --color-bg-modal: var(--neutrals-900);
+  --color-bg-modal-header: var(--neutrals-800);
+  --color-bg-input: var(--neutrals-800);
+  --color-bg-hover: var(--neutrals-700);
+  --color-bg-active: var(--neutrals-600);
+  --color-bg-toggle-inactive: var(--neutrals-700);
+
+  /* 상태별 배경 */
+  --color-bg-success: var(--success-950);
+  --color-bg-warning: var(--warning-950);
+  --color-bg-error: var(--error-950);
+  --color-bg-info: var(--info-950);
+
+  /* 테이블 배경 */
+  --color-table-header-bg: var(--neutrals-800);
+  --color-table-row-bg: var(--neutrals-900);
+  --color-table-row-hover: var(--neutrals-800);
+  --color-table-row-selected: var(--primary-950);
+
+  /* ========== 텍스트 (Text) ========== */
+  --color-text-primary: var(--neutrals-100);
+  --color-text-secondary: var(--neutrals-400);
+  --color-text-tertiary: var(--neutrals-500);
+  --color-text-muted: var(--neutrals-500);
+  --color-text-inverse: var(--neutrals-900);
+  --color-text-link: var(--primary-400);
+  --color-text-link-hover: var(--primary-300);
+  --color-text-header-btn: #9DA6B2;
+  --color-bg-header-btn-active: rgba(161, 232, 211, 0.16);
+  --color-text-sidebar-menu: var(--neutrals-100);
+
+  /* 상태별 텍스트 */
+  --color-text-success: var(--success-400);
+  --color-text-warning: var(--warning-400);
+  --color-text-error: var(--error-400);
+  --color-text-info: var(--info-400);
+
+  /* ========== 테두리 (Border) ========== */
+  --color-border-primary: var(--neutrals-700);
+  --color-border-secondary: var(--neutrals-800);
+  --color-border-header: var(--neutrals-800);
+  --color-border-sidebar: var(--neutrals-700);
+  --color-border-focus: var(--primary-400);
+  --color-border-error: var(--error-400);
+  --color-border-success: var(--success-400);
+  --color-border-warning: var(--warning-400);
+
+  /* ========== 버튼 (Button) ========== */
+  --color-btn-primary: var(--primary-500);
+  --color-btn-primary-hover: var(--primary-400);
+  --color-btn-secondary: var(--neutrals-700);
+  --color-btn-secondary-hover: var(--neutrals-600);
+  --color-btn-success: var(--success-500);
+  --color-btn-danger: var(--error-500);
+  --color-btn-warning: var(--warning-500);
+
+  /* ========== 인풋 (Input) ========== */
+  --color-input-border: var(--neutrals-600);
+  --color-input-focus: var(--primary-400);
+  --color-input-disabled: var(--neutrals-800);
+  --color-input-placeholder: var(--neutrals-500);
+
+  /* ========== 상태 색상 (Status) ========== */
+  --color-success: var(--success-400);
+  --color-info: var(--info-400);
+  --color-warning: var(--warning-400);
+  --color-danger: var(--error-400);
+
+  /* ========== 그림자 (Shadow) ========== */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+
+  /* ========== 오버레이 (Overlay) ========== */
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --color-backdrop: rgba(0, 0, 0, 0.3);
+  --color-focus-ring: rgba(66, 209, 166, 0.2);
+  --color-error-ring: rgba(234, 84, 85, 0.2);
+  --color-wave-highlight: rgba(255, 255, 255, 0.1);
+
+  /* ========== 차트 (Chart) ========== */
+  --color-chart-primary: var(--primary-400);
+  --color-chart-secondary: var(--neutrals-400);
+  --color-chart-success: var(--success-400);
+  --color-chart-warning: var(--warning-400);
+  --color-chart-danger: var(--error-400);
+  --color-chart-info: var(--info-400);
+
+  /* ========== 프로그레스 (Progress) ========== */
+  --color-progress-track: var(--neutrals-700);
+  --color-progress-fill: var(--primary-400);
+  --color-progress-success: var(--success-400);
+  --color-progress-warning: var(--warning-400);
+  --color-progress-danger: var(--error-400);
+}

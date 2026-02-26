@@ -1,0 +1,197 @@
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tableWrapper {
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+  border-radius: var(--radius-md);
+}
+
+.simpleTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 3; // 세로 스크롤 시 모든 헤더가 상단에 고정
+
+    tr {
+      background-color: var(--color-table-header-bg);
+    }
+
+    th {
+      padding: 0.875rem 1rem;
+      font-weight: 600;
+      color: var(--color-table-header-text);
+      text-align: center; // 중앙 정렬
+      white-space: nowrap;
+      background-color: var(--color-table-header-bg); // 명시적 배경색
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid var(--color-border-secondary);
+    }
+
+    td {
+      padding: 0.4rem 1rem;
+      color: var(--color-text-primary);
+      text-align: center; // 중앙 정렬
+      white-space: nowrap; // 값 길이에 맞게 컬럼 확장
+    }
+  }
+
+  // Striped rows
+  &--striped {
+    tbody tr:nth-child(even) {
+      background-color: var(--color-bg-tertiary);
+    }
+  }
+
+  // Hoverable rows (transition 제거 - 선택/해제 시 즉각 반응)
+  &--hoverable {
+    tbody tr:not(.selectedRow):hover {
+      background-color: var(--color-bg-tertiary);
+    }
+  }
+
+  // Bordered
+  &--bordered {
+    // td {
+    //   border-right: 1px solid var(--color-border-primary);
+
+    //   &:last-child {
+    //     border-right: none;
+    //   }
+    // }
+  }
+
+  // Compact padding
+  &--compact {
+    thead th,
+    tbody td {
+      padding: 0.5rem 0.75rem;
+    }
+  }
+
+  // Row sizes
+  &--row-sm {
+    tbody td {
+      padding: 0.4rem 1rem;
+    }
+  }
+  &--row-md {
+    tbody td {
+      padding: 0.75rem 1rem;
+    }
+  }
+
+  &--row-lg {
+    tbody td {
+      padding: 1.25rem 1rem;
+    }
+  }
+}
+
+// Empty state
+.emptyCell {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  vertical-align: middle;
+}
+
+// 선택된 행 (모든 td에 즉시 배경색 적용)
+.selectedRow {
+  background-color: var(--color-bg-tertiary) !important;
+
+  td {
+    background-color: var(--color-bg-tertiary) !important;
+    transition: none !important; // 즉시 변경
+  }
+}
+
+// Sticky column (고정 컬럼)
+.stickyCell {
+  position: sticky;
+  z-index: 2;
+  background-color: var(--color-bg-tertiary);
+  // 컨텐츠가 넘치지 않도록 처리
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+
+  // hover 시에도 배경색 유지
+  tbody tr:hover & {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  // striped 테이블의 짝수 행
+  .simpleTable--striped tbody tr:nth-child(even) & {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  // 왼쪽 고정 컬럼 (오른쪽에 그림자)
+  &--left {
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: -6px;
+      bottom: 0;
+      width: 6px;
+      background: linear-gradient(to right, var(--color-backdrop), transparent);
+      pointer-events: none;
+    }
+  }
+
+  // 오른쪽 고정 컬럼 (왼쪽에 그림자)
+  &--right {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -6px;
+      bottom: 0;
+      width: 6px;
+      background: linear-gradient(to left, var(--color-backdrop), transparent);
+      pointer-events: none;
+    }
+  }
+}
+
+// thead의 sticky header (세로/가로 스크롤 모두 고정)
+.stickyHeader {
+  z-index: 4 !important; // 가장 높은 z-index (다른 sticky 셀 위로)
+}
+
+// 선택된 행의 sticky 셀
+.stickySelected {
+  background-color: var(--color-bg-tertiary) !important;
+}
+
+// 반응형
+@media (max-width: 768px) {
+  .simpleTable {
+    font-size: 0.8125rem;
+
+    thead th,
+    tbody td {
+      padding: 0.625rem 0.75rem;
+    }
+
+    &--compact {
+      thead th,
+      tbody td {
+        padding: 0.375rem 0.5rem;
+      }
+    }
+  }
+}

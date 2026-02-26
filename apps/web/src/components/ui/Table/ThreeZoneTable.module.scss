@@ -1,0 +1,165 @@
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.titleRow {
+  padding: 10px;
+  text-align: center;
+  background-color: var(--neutrals-50);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+// 그룹 헤더 바 (테이블 외부 - 스크롤되지 않음)
+.groupHeaderBar {
+  display: flex;
+  background-color: var(--neutrals-50);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.groupHeaderCell {
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.leftGroupHeader {
+  border-right: 1px solid var(--neutrals-200);
+}
+
+.centerGroupHeader {
+  flex: 1;
+  min-width: 0;
+}
+
+.rightGroupHeader {
+  border-left: 1px solid var(--neutrals-200);
+}
+
+.tableWrapper {
+  flex: 1;
+  overflow: auto;
+  background-color: var(--white);
+}
+
+// 그룹 헤더 행
+.groupHeaderRow {
+  background-color: var(--neutrals-50);
+}
+
+.groupHeader {
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  background-color: var(--neutrals-50);
+}
+
+.leftGroup {
+  border-right: 1px solid var(--neutrals-200);
+}
+
+.rightGroup {
+  border-left: 1px solid var(--neutrals-200);
+}
+
+// 컬럼 헤더 행
+.columnHeaderRow {
+  background-color: var(--neutrals-50);
+}
+
+.headerCell {
+  padding: 10px 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+  background-color: var(--neutrals-50);
+}
+
+.stickyHeader {
+  background-color: var(--neutrals-50);
+}
+
+// 왼쪽 영역 마지막 셀 (border-right)
+.leftLastCell {
+  border-right: 1px solid var(--neutrals-200);
+}
+
+// 오른쪽 영역 첫 번째 셀 (border-left)
+.rightFirstCell {
+  border-left: 1px solid var(--neutrals-200);
+}
+
+// 데이터 셀
+.dataCell {
+  padding: 10px 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--neutrals-100);
+  background-color: var(--white);
+
+  // 버튼 등 자식 요소 중앙 정렬
+  button {
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+.stickyCell {
+  background-color: var(--white);
+}
+
+// 선택된 행
+.selectedRow {
+  td {
+    background-color: var(--primary-50) !important;
+  }
+}
+
+.stickySelected {
+  background-color: var(--primary-50) !important;
+}
+
+// 호버 효과
+tbody tr:hover:not(.selectedRow) {
+  td {
+    background-color: var(--color-bg-tertiary);
+  }
+}
+
+// Empty 상태
+.emptyCell {
+  padding: 3rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+// Info 버튼
+.infoButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

@@ -1,0 +1,110 @@
+.switchWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.switchContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.switchRoot {
+  all: unset; // 모든 기본 button 스타일 제거
+  position: relative;
+  border-radius: var(--radius-full);
+  background-color: var(--color-input-border);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+  }
+
+  &[data-state="checked"] {
+    background-color: var(--color-btn-primary);
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // Size variants
+  &--sm {
+    width: 32px;
+    height: 18px;
+  }
+
+  &--md {
+    width: 44px;
+    height: 24px;
+  }
+
+  &--lg {
+    width: 56px;
+    height: 30px;
+  }
+}
+
+.switchThumb {
+  display: block;
+  background-color: var(--color-text-inverse);
+  border-radius: var(--radius-full);
+  transition: transform 0.2s;
+  will-change: transform;
+
+  &--sm {
+    width: 14px;
+    height: 14px;
+    transform: translateX(2px);
+
+    &[data-state="checked"] {
+      transform: translateX(12px);
+    }
+  }
+
+  &--md {
+    width: 18px;
+    height: 18px;
+    transform: translateX(2px);
+
+    &[data-state="checked"] {
+      transform: translateX(20px);
+    }
+  }
+
+  &--lg {
+    width: 22px;
+    height: 22px;
+    transform: translateX(2px);
+
+    &[data-state="checked"] {
+      transform: translateX(28px);
+    }
+  }
+}
+
+.label {
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+
+  &:has(+ .switchRoot[data-disabled]) {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.required {
+  color: var(--color-danger);
+  margin-left: 0.25rem;
+}

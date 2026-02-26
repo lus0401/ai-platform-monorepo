@@ -1,0 +1,296 @@
+:root {
+  /* ============================================
+   * TYPOGRAPHY
+   * ============================================ */
+
+  /* Font Family */
+  --font-family-base: "Pretendard", sans-serif;
+  --font-family-mono: "Fira Code", "Consolas", monospace;
+
+  /* Font Weight */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Font Size - Display */
+  --font-size-display-lg: 4.8rem; /* 48px */
+  --font-size-display-md: 4rem; /* 40px */
+  --font-size-display-sm: 3.6rem; /* 36px */
+
+  /* Font Size - Heading */
+  --font-size-heading-lg: 3.2rem; /* 32px */
+  --font-size-heading-md: 2.4rem; /* 24px */
+  --font-size-heading-sm: 2rem; /* 20px */
+
+  /* Font Size - Title */
+  --font-size-title-lg: 1.8rem; /* 18px */
+  --font-size-title-md: 1.6rem; /* 16px */
+  --font-size-title-sm: 1.4rem; /* 14px */
+
+  /* Font Size - Body */
+  --font-size-body-lg: 1.6rem; /* 16px */
+  --font-size-body-md: 1.4rem; /* 14px */
+  --font-size-body-sm: 1.2rem; /* 12px */
+
+  /* Font Size - Caption */
+  --font-size-caption-lg: 1.4rem; /* 14px */
+  --font-size-caption-md: 1.2rem; /* 12px */
+  --font-size-caption-sm: 1rem; /* 10px */
+
+  /* Font Size - Button */
+  --font-size-button-lg: 1.6rem; /* 16px */
+  --font-size-button-md: 1.4rem; /* 14px */
+  --font-size-button-sm: 1.2rem; /* 12px */
+
+  /* Line Height */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Line Height - Semantic */
+  --line-height-display: 1.25;
+  --line-height-heading: 1.25;
+  --line-height-title: 1.4;
+  --line-height-body: 1.5;
+  --line-height-caption: 1.3;
+  --line-height-button: 1.3;
+
+  /* ============================================
+   * BORDER RADIUS
+   * ============================================ */
+  --radius-none: 0;
+  --radius-xsm: 0.125rem; /* 2px */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.375rem; /* 6px */
+  --radius-mlg: 0.5rem; /* 8px */
+  --radius-lg: 0.625rem; /* 10px */
+  --radius-xl: 0.75rem; /* 12px */
+  --radius-2xl: 1rem; /* 16px */
+  --radius-3xl: 1.5rem; /* 24px */
+  --radius-4xl: 2rem; /* 32px */
+  --radius-full: 9999px;
+
+  /* ============================================
+   * SPACING (4px 기준 스케일)
+   * ============================================ */
+  --spacing-0: 0;
+  --spacing-px: 1px;
+  --spacing-0-5: 0.125rem; /* 2px */
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-1-5: 0.375rem; /* 6px */
+  --spacing-2: 0.5rem; /* 8px */
+  --spacing-2-5: 0.625rem; /* 10px */
+  --spacing-3: 0.75rem; /* 12px */
+  --spacing-3-5: 0.875rem; /* 14px */
+  --spacing-4: 1rem; /* 16px */
+  --spacing-5: 1.25rem; /* 20px */
+  --spacing-6: 1.5rem; /* 24px */
+  --spacing-7: 1.75rem; /* 28px */
+  --spacing-8: 2rem; /* 32px */
+  --spacing-9: 2.25rem; /* 36px */
+  --spacing-10: 2.5rem; /* 40px */
+  --spacing-11: 2.75rem; /* 44px */
+  --spacing-12: 3rem; /* 48px */
+  --spacing-14: 3.5rem; /* 56px */
+  --spacing-16: 4rem; /* 64px */
+  --spacing-20: 5rem; /* 80px */
+  --spacing-24: 6rem; /* 96px */
+  --spacing-28: 7rem; /* 112px */
+  --spacing-32: 8rem; /* 128px */
+
+  /* Spacing - Semantic (시맨틱 네이밍) */
+  --spacing-xsm: var(--spacing-1); /* 4px */
+  --spacing-sm: var(--spacing-2); /* 8px */
+  --spacing-md: var(--spacing-3); /* 12px */
+  --spacing-mlg: var(--spacing-4); /* 16px */
+  --spacing-lg: var(--spacing-5); /* 20px */
+  --spacing-xl: var(--spacing-6); /* 24px */
+  --spacing-2xl: var(--spacing-8); /* 32px */
+  --spacing-3xl: var(--spacing-10); /* 40px */
+  --spacing-4xl: var(--spacing-12); /* 48px */
+  --spacing-5xl: var(--spacing-16); /* 64px */
+
+  /* ============================================
+   * GAP (Flex/Grid 간격)
+   * ============================================ */
+  --gap-xsm: var(--spacing-1); /* 4px */
+  --gap-sm: var(--spacing-2); /* 8px */
+  --gap-md: var(--spacing-3); /* 12px */
+  --gap-mlg: var(--spacing-4); /* 16px */
+  --gap-lg: var(--spacing-5); /* 20px */
+  --gap-xl: var(--spacing-6); /* 24px */
+  --gap-2xl: var(--spacing-8); /* 32px */
+
+  /* ============================================
+   * SIZING (Width/Height)
+   * ============================================ */
+  --size-0: 0;
+  --size-px: 1px;
+  --size-1: 0.25rem; /* 4px */
+  --size-2: 0.5rem; /* 8px */
+  --size-3: 0.75rem; /* 12px */
+  --size-4: 1rem; /* 16px */
+  --size-5: 1.25rem; /* 20px */
+  --size-6: 1.5rem; /* 24px */
+  --size-7: 1.75rem; /* 28px */
+  --size-8: 2rem; /* 32px */
+  --size-9: 2.25rem; /* 36px */
+  --size-10: 2.5rem; /* 40px */
+  --size-11: 2.75rem; /* 44px */
+  --size-12: 3rem; /* 48px */
+  --size-14: 3.5rem; /* 56px */
+  --size-16: 4rem; /* 64px */
+  --size-20: 5rem; /* 80px */
+  --size-24: 6rem; /* 96px */
+  --size-28: 7rem; /* 112px */
+  --size-32: 8rem; /* 128px */
+  --size-36: 9rem; /* 144px */
+  --size-40: 10rem; /* 160px */
+  --size-44: 11rem; /* 176px */
+  --size-48: 12rem; /* 192px */
+  --size-52: 13rem; /* 208px */
+  --size-56: 14rem; /* 224px */
+  --size-60: 15rem; /* 240px */
+  --size-64: 16rem; /* 256px */
+  --size-72: 18rem; /* 288px */
+  --size-80: 20rem; /* 320px */
+  --size-96: 24rem; /* 384px */
+
+  /* Size - Percentage */
+  --size-full: 100%;
+  --size-screen: 100vw;
+  --size-screen-h: 100vh;
+  --size-min: min-content;
+  --size-max: max-content;
+  --size-fit: fit-content;
+
+  /* ============================================
+   * BREAKPOINTS
+   * ============================================ */
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 360px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+  --breakpoint-3xl: 1920px;
+
+  /* ============================================
+   * ICON SIZE
+   * ============================================ */
+  --icon-size-xsm: 1.2rem; /* 12px */
+  --icon-size-sm: 1.6rem; /* 16px */
+  --icon-size-md: 2rem; /* 20px */
+  --icon-size-mlg: 2.4rem; /* 24px */
+  --icon-size-lg: 2.8rem; /* 28px */
+  --icon-size-xl: 3.2rem; /* 32px */
+  --icon-size-2xl: 4rem; /* 40px */
+  --icon-size-3xl: 4.8rem; /* 48px */
+
+  /* Icon Size - Base (기본 아이콘 크기) */
+  --icon-size-base: var(--icon-size-mlg); /* 24px */
+
+  /* ============================================
+   * BORDER WIDTH
+   * ============================================ */
+  --border-width-0: 0;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-3: 3px;
+  --border-width-4: 4px;
+  --border-width-8: 8px;
+
+  /* Border Width - Semantic */
+  --border-width-thin: var(--border-width-1);
+  --border-width-medium: var(--border-width-2);
+  --border-width-thick: var(--border-width-4);
+
+  /* ============================================
+   * SHADOWS
+   * ============================================ */
+  --shadow-none: none;
+  --shadow-xsm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-mlg: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+  /* ============================================
+   * Z-INDEX
+   * ============================================ */
+  --z-index-hide: -1;
+  --z-index-auto: auto;
+  --z-index-base: 0;
+  --z-index-dropdown: 100;
+  --z-index-sticky: 200;
+  --z-index-fixed: 300;
+  --z-index-backdrop: 400;
+  --z-index-modal: 500;
+  --z-index-popover: 600;
+  --z-index-tooltip: 700;
+  --z-index-toast: 800;
+  --z-index-top: 9999;
+
+  /* ============================================
+   * TRANSITION / ANIMATION
+   * ============================================ */
+
+  /* Duration */
+  --duration-instant: 0ms;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+  --duration-slowest: 700ms;
+
+  /* Easing */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Transition Presets */
+  --transition-fast: all var(--duration-fast) var(--ease-out);
+  --transition-normal: all var(--duration-normal) var(--ease-out);
+  --transition-slow: all var(--duration-slow) var(--ease-out);
+  --transition-colors: color var(--duration-normal) var(--ease-out),
+    background-color var(--duration-normal) var(--ease-out),
+    border-color var(--duration-normal) var(--ease-out);
+  --transition-transform: transform var(--duration-normal) var(--ease-out);
+  --transition-opacity: opacity var(--duration-normal) var(--ease-out);
+
+  /* ============================================
+   * OPACITY
+   * ============================================ */
+  --opacity-0: 0;
+  --opacity-5: 0.05;
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-25: 0.25;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-75: 0.75;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-95: 0.95;
+  --opacity-100: 1;
+
+  /* Opacity - Semantic */
+  --opacity-disabled: var(--opacity-50);
+  --opacity-hover: var(--opacity-80);
+  --opacity-overlay: var(--opacity-50);
+  --opacity-backdrop: var(--opacity-70);
+}

@@ -1,0 +1,109 @@
+.checkboxWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkboxRoot {
+  all: unset; // 모든 기본 button 스타일 제거
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-input-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  // Size variants
+  &--sm {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+  }
+
+  &--md {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  &--lg {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+  }
+
+  &:hover:not([data-disabled]) {
+    border-color: var(--color-border-primary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+  }
+
+  &[data-state="checked"] {
+    background-color: var(--color-btn-primary);
+    border-color: var(--color-btn-primary);
+  }
+
+  &[data-disabled] {
+    background-color: var(--color-input-disabled);
+    border-color: var(--color-border-secondary);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &--error {
+    border-color: var(--color-border-error);
+
+    &:focus-visible {
+      border-color: var(--color-border-error);
+      box-shadow: 0 0 0 3px var(--color-error-ring);
+    }
+  }
+}
+
+.checkboxIndicator {
+  color: var(--color-text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+
+  &:has(+ .checkboxRoot[data-disabled]) {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.required {
+  color: var(--color-danger);
+  margin-left: 0.25rem;
+}
+
+.errorMessage {
+  font-size: 0.8125rem;
+  color: var(--color-danger);
+  margin-left: 1.75rem;
+}

@@ -28,3 +28,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+@import "../styles/common/reset.css";
+@import "../styles/common/fonts.css";
+@import "../styles/common/colors.css";
+
+/* 디자인 시스템 토큰 */
+@import "../styles/common/token-primitives.css";
+@import "../styles/common/token-theme.css";

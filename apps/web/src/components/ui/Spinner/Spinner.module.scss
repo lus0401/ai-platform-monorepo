@@ -1,0 +1,231 @@
+.spinnerWrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.spinnerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.spinnerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+}
+
+.spinner {
+  display: inline-block;
+  position: relative;
+
+  // Variant: circular (기본 원형)
+  &--circular {
+    border-radius: 50%;
+    border-style: solid;
+    animation: rotate 0.8s linear infinite;
+
+    &.spinner--sm {
+      width: 20px;
+      height: 20px;
+      border-width: 2px;
+    }
+
+    &.spinner--md {
+      width: 32px;
+      height: 32px;
+      border-width: 3px;
+    }
+
+    &.spinner--lg {
+      width: 48px;
+      height: 48px;
+      border-width: 4px;
+    }
+
+    &.spinner--xl {
+      width: 64px;
+      height: 64px;
+      border-width: 5px;
+    }
+
+    // Colors
+    &.spinner--primary {
+      border-color: var(--color-bg-subtle);
+      border-top-color: var(--color-btn-primary);
+    }
+
+    &.spinner--secondary {
+      border-color: var(--color-bg-subtle);
+      border-top-color: var(--color-text-secondary);
+    }
+
+    &.spinner--white {
+      border-color: rgba(255, 255, 255, 0.3);
+      border-top-color: var(--white);
+    }
+  }
+
+  // Variant: dots (점 3개)
+  &--dots {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .dot {
+      display: inline-block;
+      border-radius: 50%;
+      animation: bounce 1.4s ease-in-out infinite;
+
+      &:nth-child(1) {
+        animation-delay: -0.32s;
+      }
+
+      &:nth-child(2) {
+        animation-delay: -0.16s;
+      }
+    }
+
+    &.spinner--sm .dot {
+      width: 6px;
+      height: 6px;
+    }
+
+    &.spinner--md .dot {
+      width: 10px;
+      height: 10px;
+    }
+
+    &.spinner--lg .dot {
+      width: 14px;
+      height: 14px;
+    }
+
+    &.spinner--xl .dot {
+      width: 18px;
+      height: 18px;
+    }
+
+    // Colors
+    &.spinner--primary .dot {
+      background-color: var(--color-btn-primary);
+    }
+
+    &.spinner--secondary .dot {
+      background-color: var(--color-text-secondary);
+    }
+
+    &.spinner--white .dot {
+      background-color: var(--white);
+    }
+  }
+
+  // Variant: ring (링 스타일)
+  &--ring {
+    .ring {
+      border-radius: 50%;
+      border-style: solid;
+      animation: pulse 1.2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+    &.spinner--sm .ring {
+      width: 20px;
+      height: 20px;
+      border-width: 2px;
+    }
+
+    &.spinner--md .ring {
+      width: 32px;
+      height: 32px;
+      border-width: 3px;
+    }
+
+    &.spinner--lg .ring {
+      width: 48px;
+      height: 48px;
+      border-width: 4px;
+    }
+
+    &.spinner--xl .ring {
+      width: 64px;
+      height: 64px;
+      border-width: 5px;
+    }
+
+    // Colors
+    &.spinner--primary .ring {
+      border-color: var(--color-btn-primary);
+    }
+
+    &.spinner--secondary .ring {
+      border-color: var(--color-text-secondary);
+    }
+
+    &.spinner--white .ring {
+      border-color: var(--white);
+    }
+  }
+}
+
+.spinnerLabel {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-align: center;
+
+  .spinnerOverlay & {
+    color: var(--color-text-primary);
+  }
+}
+
+// Animations
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+

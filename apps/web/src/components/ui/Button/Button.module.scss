@@ -1,0 +1,236 @@
+$colors: primary, neutrals, info, success, warning, error;
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+  gap: 0.25rem;
+  user-select: none;
+  overflow: hidden;
+  outline: none;
+
+  &:disabled {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  // size 규칙
+  &.t {
+    min-width: unset;
+    height: 1.5rem;
+    padding: 0 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+
+    svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    &:has(svg:only-child) {
+      width: 1.5rem;
+      padding: 0rem;
+    }
+  }
+
+  &.es {
+    height: 1.875rem;
+    padding: 0 0.625rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    &:has(svg:only-child) {
+      width: 1.875rem;
+      padding: 0rem;
+    }
+  }
+
+  &.s {
+    height: 2.125rem;
+    padding: 0 0.625rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    &:has(svg:only-child) {
+      width: 2.125rem;
+      padding: 0rem;
+    }
+  }
+
+  &.m {
+    height: 2.375rem;
+    padding: 0 1rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+
+    i {
+      font-size: 22px;
+    }
+
+    &:has(svg:only-child) {
+      width: 2.375rem;
+      padding: 0rem;
+    }
+  }
+
+  &.l {
+    height: 3rem;
+    padding: 0 1.25rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    &:has(svg:only-child) {
+      width: 3rem;
+      padding: 0rem;
+    }
+  }
+
+  &.el {
+    height: 3.5rem;
+    padding: 0 1.25rem;
+    border-radius: 0.375rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+
+    svg {
+      width: 1.75rem;
+      height: 1.75rem;
+    }
+
+    &:has(svg:only-child) {
+      width: 3.5rem;
+      padding: 0rem;
+    }
+  }
+
+  &.h {
+    height: 3.625rem;
+    padding: 0 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+
+    svg {
+      width: 1.875rem;
+      height: 1.875rem;
+    }
+
+    &:has(svg:only-child) {
+      width: 3.625rem;
+      padding: 0rem;
+    }
+  }
+
+  // color 규칙
+  @each $c in $colors {
+    &.#{$c}.filled {
+      background-color: var(--#{$c}-500);
+      color: var(--white);
+
+      &:hover {
+        background-color: var(--#{$c}-600);
+      }
+      &:active {
+        background-color: var(--#{$c}-700);
+      }
+      &:disabled {
+        background-color: var(--#{$c}-100);
+      }
+    }
+    &.#{$c}.outlined,
+    &.#{$c}.light,
+    &.#{$c}.ghost {
+      // 텍스트 색상, hover/active 시 배경색 같음
+      color: var(--#{$c}-500);
+      &:hover {
+        background-color: var(--#{$c}-op-01);
+        color: var(--#{$c}-600);
+      }
+      &:active {
+        background-color: var(--#{$c}-op-02);
+        color: var(--#{$c}-700);
+      }
+      &:disabled {
+        color: var(--#{$c}-200);
+      }
+    }
+    &.#{$c}.outlined {
+      border-color: var(--#{$c}-500);
+
+      &:hover {
+        border-color: var(--#{$c}-600);
+      }
+      &:active {
+        border-color: var(--#{$c}-700);
+      }
+      &:disabled {
+        border-color: var(--#{$c}-200);
+      }
+    }
+    &.#{$c}.light {
+      background-color: var(--#{$c}-50);
+    }
+  }
+  &.filled {
+    // color 규칙 예외
+    &.primary {
+      &:disabled {
+        background-color: var(--primary-100);
+      }
+    }
+  }
+  &.outlined,
+  &.light,
+  &.ghost {
+    // color 규칙 예외
+    &.neutrals {
+      color: var(--color-text-header-btn);
+      &:hover {
+        color: var(--color-text-header-btn);
+      }
+      &:disabled {
+        color: var(--neutrals-300);
+      }
+    }
+  }
+  &.outlined {
+    border-width: 1px;
+    border-style: solid;
+    // color 규칙 예외
+    &.neutrals {
+      &:disabled {
+        border-color: var(--neutrals-300);
+      }
+    }
+  }
+  &.ghost {
+    background-color: transparent;
+  }
+
+  // 둥글기
+  &.round {
+    border-radius: 999rem;
+  }
+}

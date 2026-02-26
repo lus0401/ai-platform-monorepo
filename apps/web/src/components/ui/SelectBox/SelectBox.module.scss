@@ -1,0 +1,139 @@
+.selectWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  position: relative;
+
+  // Width variants
+  &--full {
+    width: 100%;
+  }
+
+  &--half {
+    width: 50%;
+  }
+
+  &--third {
+    width: 33.333%;
+  }
+
+  &--quarter {
+    width: 25%;
+  }
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.required {
+  color: var(--color-danger);
+  margin-left: 0.25rem;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.48rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+
+  &[data-placeholder] {
+    color: var(--color-input-placeholder);
+  }
+
+  &:focus {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+  }
+
+  // Error state
+  &--error {
+    border-color: var(--color-border-error);
+
+    &:focus {
+      border-color: var(--color-border-error);
+      box-shadow: 0 0 0 3px var(--color-error-ring);
+    }
+  }
+
+  // Disabled state
+  &--disabled {
+    background-color: var(--color-input-disabled);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    border-color: var(--color-border-secondary);
+  }
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+}
+
+.content {
+  overflow: hidden;
+  background-color: var(--color-input-bg);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+}
+
+.viewport {
+  padding: 0.25rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+
+  &[data-highlighted] {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  &[data-state="checked"] {
+    background-color: var(--color-input-focus);
+    color: var(--color-text-inverse);
+  }
+
+  &[data-disabled] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.itemIndicator {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+}
+
+.errorMessage {
+  position: absolute;
+  left: 0.5rem;
+  bottom: -1.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-danger);
+  white-space: nowrap;
+}

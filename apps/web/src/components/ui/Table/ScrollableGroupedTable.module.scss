@@ -1,0 +1,249 @@
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+// 타이틀 행 - 최상단 타이틀 표시
+.titleRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.625rem 0.5rem;
+  background-color: var(--neutrals-50);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+
+  span {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+}
+
+// 그룹 헤더 바
+.groupHeaderBar {
+  display: flex;
+  width: 100%;
+  background-color: var(--neutrals-50);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+
+  .titleRow + & {
+    border-radius: 0;
+  }
+}
+
+.stickyGroupHeader {
+  flex-shrink: 0;
+  min-width: 150px;
+  padding: 0.625rem 0.5rem;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  border-right: 1px solid var(--neutrals-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scrollableGroupHeader {
+  flex: 1;
+  min-width: 0;
+  padding: 0.625rem 0.5rem;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.groupBorderRight {
+  border-right: 1px solid var(--neutrals-300);
+}
+
+// 테이블 래퍼
+.tableWrapper {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background-color: var(--white);
+}
+
+// 열 기반 컨테이너
+.columnsContainer {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+}
+
+// Sticky 열 그룹 (LOT 등)
+.stickyColumnGroup {
+  flex-shrink: 0;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--neutrals-300);
+  background-color: var(--white);
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+// 스크롤 가능한 그룹 열
+.scrollableColumnGroup {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// 그룹 스크롤 래퍼 (그룹 전체가 스크롤)
+.groupScrollWrapper {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  // 스크롤바 스타일
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--neutrals-100);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--neutrals-400);
+    border-radius: 4px;
+
+    &:hover {
+      background-color: var(--neutrals-500);
+    }
+  }
+}
+
+// 그룹 스크롤 컨텐츠
+.groupScrollContent {
+  display: flex;
+  flex-direction: column;
+  min-width: max-content;
+}
+
+// 컬럼 헤더들
+.columnHeaders {
+  display: flex;
+  background-color: var(--neutrals-50);
+  border-bottom: 1px solid var(--neutrals-200);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+// 헤더 셀
+.headerCell {
+  min-width: 100px;
+  width: 120px;
+  padding: 12px 20px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.headerStickyCell {
+  min-width: 120px;
+  width: 150px;
+  padding: 12px 20px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// 컬럼 데이터 영역
+.columnData {
+  display: flex;
+  flex-direction: column;
+}
+
+// 데이터 행
+.dataRow {
+  display: flex;
+  border-bottom: 1px solid var(--neutrals-100);
+
+  &:hover:not(.selectedRow) {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// 데이터 셀
+.dataCell {
+  min-width: 100px;
+  width: 120px;
+  padding: 12px 20px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  background-color: inherit;
+
+  span {
+    cursor: inherit;
+  }
+}
+
+// 선택된 행
+.selectedRow {
+  background-color: var(--primary-50) !important;
+}
+
+// Sticky 선택됨
+.stickySelected {
+  background-color: var(--primary-50) !important;
+}
+
+// Empty 상태
+.emptyRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  width: 100%;
+  height: 100%;
+}
+
+.emptyContent {
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+// 반응형
+@media (max-width: 768px) {
+  .headerCell,
+  .dataCell {
+    min-width: 80px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .stickyGroupHeader,
+  .scrollableGroupHeader {
+    font-size: 12px;
+    padding: 0.5rem;
+  }
+}

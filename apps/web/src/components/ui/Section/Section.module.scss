@@ -1,0 +1,92 @@
+.section {
+  border-radius: var(--radius-lg);
+  transition: box-shadow 0.2s ease;
+  margin-bottom: 1.5rem;
+
+  // Background 옵션
+  &--bg-white {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  &--bg-transparent {
+    background-color: transparent;
+  }
+
+  // Shadow 옵션
+  &--shadow {
+    box-shadow: var(--shadow-sm);
+  }
+
+  // Padding 옵션
+  &--padding-none {
+    padding: 0;
+  }
+
+  &--padding-sm {
+    padding: 1rem;
+  }
+
+  &--padding-md {
+    padding: 1.5rem;
+  }
+
+  &--padding-lg {
+    padding: 2rem;
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-border-primary);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.sectionHeaderAction {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sectionBody {
+  // 자식 요소들을 위한 컨테이너
+  width: 100%;
+}
+
+// 반응형
+@media (max-width: 768px) {
+  .section {
+    margin-bottom: 1rem;
+
+    &--padding-sm {
+      padding: 0.75rem;
+    }
+
+    &--padding-md {
+      padding: 1rem;
+    }
+
+    &--padding-lg {
+      padding: 1.25rem;
+    }
+  }
+
+  .sectionHeader {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.125rem;
+  }
+}

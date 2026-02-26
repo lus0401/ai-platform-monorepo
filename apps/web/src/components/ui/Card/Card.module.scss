@@ -1,0 +1,122 @@
+.card {
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // Border 옵션
+  &--bordered {
+    border: 1px solid var(--color-border-primary);
+  }
+
+  // Hoverable 옵션
+  &--hoverable {
+    &:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+  }
+
+  // Clickable 옵션
+  &--clickable {
+    cursor: pointer;
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  // Padding 옵션
+  &--padding-none {
+    .cardBody {
+      padding: 0;
+    }
+  }
+
+  &--padding-sm {
+    .cardBody {
+      padding: 0.75rem;
+    }
+  }
+
+  &--padding-md {
+    .cardBody {
+      padding: 1.25rem;
+    }
+  }
+
+  &--padding-lg {
+    .cardBody {
+      padding: 1.5rem;
+    }
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border-primary);
+  min-height: 56px;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cardHeaderAction {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cardBody {
+  flex: 1;
+  padding: 1.25rem; // 기본값, padding 옵션으로 오버라이드됨
+  overflow: auto;
+}
+
+.cardFooter {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--color-border-primary);
+  background-color: var(--color-bg-secondary);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+// 반응형
+@media (max-width: 768px) {
+  .cardHeader {
+    padding: 0.75rem 1rem;
+    min-height: 48px;
+  }
+
+  .cardTitle {
+    font-size: 0.9375rem;
+  }
+
+  .card {
+    &--padding-md {
+      .cardBody {
+        padding: 1rem;
+      }
+    }
+
+    &--padding-lg {
+      .cardBody {
+        padding: 1.25rem;
+      }
+    }
+  }
+
+  .cardFooter {
+    padding: 0.75rem 1rem;
+  }
+}
+

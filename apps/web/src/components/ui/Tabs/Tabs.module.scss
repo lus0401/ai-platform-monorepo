@@ -1,0 +1,149 @@
+.tabsRoot {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  &--vertical {
+    flex-direction: row;
+    gap: 1.5rem;
+
+    .tabsList {
+      flex-direction: column;
+      border-bottom: none;
+      border-right: 2px solid var(--color-border-primary);
+      padding-right: 0;
+      padding-bottom: 0;
+      min-width: 200px;
+    }
+
+    .tabsTrigger {
+      justify-content: flex-start;
+      border-bottom: none;
+      border-right: 2px solid transparent;
+      margin-bottom: 0.25rem;
+
+      &[data-state="active"] {
+        border-bottom: none;
+        border-right-color: var(--color-btn-primary);
+        background-color: var(--color-bg-secondary);
+      }
+    }
+  }
+}
+
+.tabsList {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid var(--color-border-primary);
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.tabsTrigger {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  position: relative;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+
+  &:hover:not([data-disabled]) {
+    color: var(--color-text-inverse);
+    background-color: var(--color-btn-primary);
+  }
+
+  &[data-state="active"] {
+    color: var(--color-btn-primary);
+    font-weight: 600;
+    border-bottom-color: var(--color-btn-primary);
+  }
+
+  &[data-disabled] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-btn-primary);
+    border-radius: var(--radius-sm);
+  }
+}
+
+.tabsContent {
+  padding: 1.5rem 0;
+  animation: fadeIn 0.2s ease-in-out;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 반응형
+@media (max-width: 768px) {
+  .tabsList {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .tabsTrigger {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .tabsContent {
+    padding: 1rem 0;
+  }
+
+  .tabsRoot--vertical {
+    flex-direction: column;
+
+    .tabsList {
+      flex-direction: row;
+      border-right: none;
+      border-bottom: 2px solid var(--color-border-primary);
+      min-width: unset;
+      padding-right: 0;
+    }
+
+    .tabsTrigger {
+      border-right: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+
+      &[data-state="active"] {
+        border-right: none;
+        border-bottom-color: var(--color-btn-primary);
+        background-color: transparent;
+      }
+    }
+  }
+}
