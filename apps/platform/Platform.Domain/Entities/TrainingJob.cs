@@ -20,6 +20,7 @@ public class TrainingJob : EntityBase
     // Status
     public JobStatus Status { get; set; } = JobStatus.Pending;
     public int Progress { get; set; } = 0; // 0..100
+    public int CurrentEpoch { get; set; } = 0;
 
     public DateTime? StartedAtUtc { get; set; }
     public DateTime? FinishedAtUtc { get; set; }

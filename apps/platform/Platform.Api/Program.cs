@@ -99,37 +99,4 @@ app.MapGet("/datasets/{id:guid}", async (Guid id, DatasetService svc) =>
 
 
 
-// -----------------------------
-// 기본 샘플 엔드포인트
-// -----------------------------
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool",
-    "Mild", "Warm", "Balmy", "Hot",
-    "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast(
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
 app.Run();
-
-// -----------------------------
-// Record 타입
-// -----------------------------
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
