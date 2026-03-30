@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import "../themes/light.css";
 import "../themes/dark.css";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "AI Platform",
-  description: "AI Platform",
+  title: "AI Platform — SIMMTECH",
+  description: "PCB Inspection AI 재학습 플랫폼",
 };
 
 export default function RootLayout({
@@ -27,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body style={{ fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif" }}>
         <Providers>{children}</Providers>
       </body>
     </html>

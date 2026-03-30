@@ -137,7 +137,7 @@ function InfluenceFactorsChart({
                   tick={{ fontSize: 11 }}
                   width={120}
                 />
-                <Tooltip formatter={(v: number) => v.toFixed(3)} />
+                <Tooltip formatter={(v) => [Number(v).toFixed(3)]} />
                 <ReferenceLine x={0} stroke="#666" />
                 <Bar dataKey="value" barSize={30}>
                   {decreaseChartData.map((entry, index) => (
@@ -183,7 +183,7 @@ function InfluenceFactorsChart({
                   tick={{ fontSize: 11 }}
                   width={120}
                 />
-                <Tooltip formatter={(v: number) => v.toFixed(3)} />
+                <Tooltip formatter={(v) => [Number(v).toFixed(3)]} />
                 <ReferenceLine x={0} stroke="#666" />
                 <Bar dataKey="value" barSize={30}>
                   {increaseChartData.map((entry, index) => (

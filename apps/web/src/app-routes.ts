@@ -41,9 +41,11 @@ export const sidebarRoutes: RouteGroup[] = [
     path: "/training",
     label: "학습",
     children: [
+      { path: "/training/datasets/quality", label: "① 학습데이터 품질관리" },
+      { path: "/training/datasets/add", label: "② 데이터 추가/검증" },
+      { path: "/training/run", label: "③ 모델 학습/배포" },
       { path: "/training/datasets", label: "데이터셋" },
       { path: "/training/models", label: "모델" },
-      { path: "/training/run", label: "학습 실행" },
       { path: "/training/validation", label: "검증" },
       { path: "/training/images/search", label: "이미지 검색" },
       { path: "/training/images/extract", label: "이미지 추출" },
