@@ -1,7 +1,8 @@
 services:
+
   postgres:
     image: postgres:15
-    container_name: ds-postgres
+    container_name: platform-postgres
     environment:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app_pw
@@ -9,7 +10,43 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ds_postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ../../apps/platform
+      dockerfile: Dockerfile
+    container_name: platform-api
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=app_db;Username=app;Password=app_pw"
+      Jwt__Secret: "CHANGE_ME_IN_PRODUCTION_USE_A_LONG_RANDOM_SECRET_KEY_32CHARS"
+      Jwt__Issuer: "PlatformApi"
+      Jwt__Audience: "PlatformClient"
+      Jwt__AccessTokenExpiryHours: "8"
+      Jwt__RefreshTokenExpiryDays: "7"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ../../apps/web
+      dockerfile: Dockerfile
+    container_name: platform-web
+    ports:
+      - "3000:3000"
+    environment:
+      PLATFORM_API_BASE: http://api:8080
+    depends_on:
+      - api
 
 volumes:
-  ds_postgres_data:
+  postgres_data:
