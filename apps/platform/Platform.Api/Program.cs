@@ -9,11 +9,15 @@ using Platform.Application.Abstractions;
 using Platform.Application.Dtos;
 using Platform.Application.Dtos.Auth;
 using Platform.Application.Dtos.Dataset;
+using Platform.Application.Dtos.Training;
 using Platform.Application.Services;
+using Platform.Application.UseCases.Dataset;
+using Platform.Application.UseCases.Training;
 
 using Platform.Infrastructure.BackgroundJobs;
 using Platform.Infrastructure.Persistence.Repositories;
 using Platform.Infrastructure.Security;
+using Platform.Infrastructure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,13 +28,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // -----------------------------
-// DI 등록
+// DI 등록 — Repositories
 // -----------------------------
 builder.Services.AddScoped<IDatasetRepository, DatasetRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITrainingJobRepository, TrainingJobRepository>();
+builder.Services.AddScoped<IModelArtifactRepository, ModelArtifactRepository>();
+
+// DI 등록 — Services
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
+builder.Services.AddScoped<IStorageService, LocalStorageService>();
 builder.Services.AddScoped<DatasetService>();
 builder.Services.AddScoped<AuthService>();
+
+// DI 등록 — Use Cases
+builder.Services.AddScoped<StartTrainingJobUseCase>();
+builder.Services.AddScoped<DeployModelUseCase>();
+builder.Services.AddScoped<ValidateDatasetUseCase>();
+builder.Services.AddScoped<MergeDatasetUseCase>();
 
 // Job 추적 (Singleton: 프로세스 생존 기간 동안 상태 유지)
 builder.Services.AddSingleton<IJobTracker, JobTracker>();
@@ -121,10 +136,10 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" }))
 // -----------------------------
 app.MapGet("/db-check", async (ApplicationDbContext db) =>
 {
-    var canConnect    = await db.Database.CanConnectAsync();
-    var userCount     = await db.Users.CountAsync();
-    var datasetCount  = await db.Datasets.CountAsync();
-    var jobCount      = await db.TrainingJobs.CountAsync();
+    var canConnect   = await db.Database.CanConnectAsync();
+    var userCount    = await db.Users.CountAsync();
+    var datasetCount = await db.Datasets.CountAsync();
+    var jobCount     = await db.TrainingJobs.CountAsync();
 
     return Results.Ok(new
     {
@@ -137,14 +152,13 @@ app.MapGet("/db-check", async (ApplicationDbContext db) =>
 .WithOpenApi();
 
 
-// -----------------------------
+// ==============================
 // Auth APIs
-// -----------------------------
+// ==============================
 app.MapPost("/api/auth/login", async (LoginRequest req, AuthService svc, HttpContext ctx) =>
 {
     var result = await svc.LoginAsync(req);
-    if (result is null)
-        return Results.Unauthorized();
+    if (result is null) return Results.Unauthorized();
 
     ctx.Response.Cookies.Append("refreshToken", result.AccessToken, new CookieOptions
     {
@@ -153,22 +167,17 @@ app.MapPost("/api/auth/login", async (LoginRequest req, AuthService svc, HttpCon
         SameSite = SameSiteMode.Strict,
         Expires  = DateTimeOffset.UtcNow.AddDays(7),
     });
-
     return Results.Ok(result);
 })
-.WithName("Login")
-.WithOpenApi()
-.AllowAnonymous();
+.WithName("Login").WithOpenApi().AllowAnonymous();
 
 app.MapPost("/api/auth/refresh", async (HttpContext ctx, AuthService svc) =>
 {
     var refreshToken = ctx.Request.Cookies["refreshToken"];
-    if (string.IsNullOrEmpty(refreshToken))
-        return Results.Unauthorized();
+    if (string.IsNullOrEmpty(refreshToken)) return Results.Unauthorized();
 
     var result = await svc.RefreshAsync(refreshToken);
-    if (result is null)
-        return Results.Unauthorized();
+    if (result is null) return Results.Unauthorized();
 
     ctx.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
     {
@@ -177,12 +186,9 @@ app.MapPost("/api/auth/refresh", async (HttpContext ctx, AuthService svc) =>
         SameSite = SameSiteMode.Strict,
         Expires  = DateTimeOffset.UtcNow.AddDays(7),
     });
-
     return Results.Ok(result);
 })
-.WithName("Refresh")
-.WithOpenApi()
-.AllowAnonymous();
+.WithName("Refresh").WithOpenApi().AllowAnonymous();
 
 app.MapPost("/api/auth/logout", async (HttpContext ctx, AuthService svc) =>
 {
@@ -193,118 +199,177 @@ app.MapPost("/api/auth/logout", async (HttpContext ctx, AuthService svc) =>
     ctx.Response.Cookies.Delete("refreshToken");
     return Results.NoContent();
 })
-.WithName("Logout")
-.WithOpenApi()
-.RequireAuthorization();
+.WithName("Logout").WithOpenApi().RequireAuthorization();
 
 
-// -----------------------------
+// ==============================
 // Dataset APIs
-// -----------------------------
+// ==============================
 app.MapPost("/api/datasets", async (CreateDatasetRequest req, DatasetService svc, ClaimsPrincipal user) =>
 {
-    var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    var userId  = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
     var created = await svc.CreateAsync(req, userId);
     return Results.Created($"/api/datasets/{created.Id}", created);
 })
-.WithName("CreateDataset")
-.WithOpenApi()
-.RequireAuthorization(p => p.RequireRole("Admin"));
+.WithName("CreateDataset").WithOpenApi().RequireAuthorization(p => p.RequireRole("Admin"));
 
 app.MapGet("/api/datasets", async (DatasetService svc) =>
     Results.Ok(await svc.ListAsync()))
-.WithName("ListDatasets")
-.WithOpenApi()
-.RequireAuthorization();
+.WithName("ListDatasets").WithOpenApi().RequireAuthorization();
 
 app.MapGet("/api/datasets/{id:guid}", async (Guid id, DatasetService svc) =>
 {
     var item = await svc.GetAsync(id);
     return item is null ? Results.NotFound() : Results.Ok(item);
 })
-.WithName("GetDatasetById")
-.WithOpenApi()
-.RequireAuthorization();
+.WithName("GetDatasetById").WithOpenApi().RequireAuthorization();
 
 app.MapDelete("/api/datasets/{id:guid}", async (Guid id, DatasetService svc) =>
 {
     var deleted = await svc.DeleteAsync(id);
     return deleted ? Results.NoContent() : Results.NotFound();
 })
-.WithName("DeleteDataset")
-.WithOpenApi()
-.RequireAuthorization(p => p.RequireRole("Admin"));
+.WithName("DeleteDataset").WithOpenApi().RequireAuthorization(p => p.RequireRole("Admin"));
 
-
-// -----------------------------
-// Dataset Validation APIs
-// -----------------------------
+// Dataset Validation
 app.MapPost("/api/datasets/{id:guid}/validate",
-    async (Guid id, DatasetService svc, DatasetValidationQueue queue, IJobTracker tracker) =>
+    async (Guid id, ValidateDatasetUseCase useCase, DatasetValidationQueue queue) =>
     {
-        var dataset = await svc.GetAsync(id);
-        if (dataset is null)
-            return Results.NotFound();
-
-        var jobId = tracker.Start(DatasetJobType.Validation);
-        await queue.EnqueueAsync(new ValidationWorkItem(jobId, id));
-
-        return Results.Accepted($"/api/datasets/validate/{jobId}", new { jobId });
+        try
+        {
+            var result = await useCase.ExecuteAsync(id,
+                jobId => queue.EnqueueAsync(new ValidationWorkItem(jobId, id)).AsTask());
+            return Results.Accepted($"/api/datasets/validate/{result.JobId}", new { result.JobId });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Results.NotFound(new { error = ex.Message });
+        }
     })
-.WithName("ValidateDataset")
-.WithOpenApi()
-.RequireAuthorization(p => p.RequireRole("Admin"));
+.WithName("ValidateDataset").WithOpenApi().RequireAuthorization(p => p.RequireRole("Admin"));
 
 app.MapGet("/api/datasets/validate/{jobId:guid}", (Guid jobId, IJobTracker tracker) =>
 {
     var info = tracker.Get(jobId);
     if (info is null) return Results.NotFound();
-
     return Results.Ok(new JobStatusResponse(
         info.JobId, info.Type.ToString(), info.Status.ToString(),
         info.Progress, info.Error, info.ResultDatasetId,
         info.StartedAt, info.FinishedAt));
 })
-.WithName("GetValidationStatus")
-.WithOpenApi()
-.RequireAuthorization();
+.WithName("GetValidationStatus").WithOpenApi().RequireAuthorization();
 
-
-// -----------------------------
-// Dataset Merge APIs
-// -----------------------------
+// Dataset Merge
 app.MapPost("/api/datasets/merge",
-    async (MergeDatasetRequest req, DatasetMergeQueue queue, IJobTracker tracker, ClaimsPrincipal user) =>
+    async (MergeDatasetRequest req, MergeDatasetUseCase useCase, DatasetMergeQueue queue, ClaimsPrincipal user) =>
     {
-        if (req.DatasetIds is null || req.DatasetIds.Count < 2)
-            return Results.BadRequest("At least 2 dataset IDs are required.");
-
-        if (string.IsNullOrWhiteSpace(req.NewName))
-            return Results.BadRequest("NewName is required.");
-
         var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var jobId  = tracker.Start(DatasetJobType.Merge);
-        await queue.EnqueueAsync(new MergeWorkItem(jobId, req.DatasetIds, req.NewName, req.Description, userId));
-
-        return Results.Accepted($"/api/datasets/merge/{jobId}", new { jobId });
+        try
+        {
+            var result = await useCase.ExecuteAsync(req, userId,
+                jobId => queue.EnqueueAsync(new MergeWorkItem(jobId, req.DatasetIds, req.NewName, req.Description, userId)).AsTask());
+            return Results.Accepted($"/api/datasets/merge/{result.JobId}", new { result.JobId });
+        }
+        catch (ArgumentException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Results.NotFound(new { error = ex.Message });
+        }
     })
-.WithName("MergeDatasets")
-.WithOpenApi()
-.RequireAuthorization(p => p.RequireRole("Admin"));
+.WithName("MergeDatasets").WithOpenApi().RequireAuthorization(p => p.RequireRole("Admin"));
 
 app.MapGet("/api/datasets/merge/{jobId:guid}", (Guid jobId, IJobTracker tracker) =>
 {
     var info = tracker.Get(jobId);
     if (info is null) return Results.NotFound();
-
     return Results.Ok(new JobStatusResponse(
         info.JobId, info.Type.ToString(), info.Status.ToString(),
         info.Progress, info.Error, info.ResultDatasetId,
         info.StartedAt, info.FinishedAt));
 })
-.WithName("GetMergeStatus")
-.WithOpenApi()
-.RequireAuthorization();
+.WithName("GetMergeStatus").WithOpenApi().RequireAuthorization();
+
+
+// ==============================
+// Training Job APIs
+// ==============================
+app.MapPost("/api/training/jobs",
+    async (StartTrainingJobRequest req, StartTrainingJobUseCase useCase, ClaimsPrincipal user) =>
+    {
+        var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        try
+        {
+            var created = await useCase.ExecuteAsync(req, userId);
+            return Results.Created($"/api/training/jobs/{created.Id}", created);
+        }
+        catch (ArgumentException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Results.NotFound(new { error = ex.Message });
+        }
+    })
+.WithName("StartTrainingJob").WithOpenApi().RequireAuthorization(p => p.RequireRole("Admin"));
+
+app.MapGet("/api/training/jobs", async (ITrainingJobRepository repo) =>
+{
+    var jobs = await repo.ListAsync();
+    return Results.Ok(jobs.Select(StartTrainingJobUseCase.ToDto));
+})
+.WithName("ListTrainingJobs").WithOpenApi().RequireAuthorization();
+
+app.MapGet("/api/training/jobs/{id:guid}", async (Guid id, ITrainingJobRepository repo) =>
+{
+    var job = await repo.GetByIdAsync(id);
+    return job is null ? Results.NotFound() : Results.Ok(StartTrainingJobUseCase.ToDto(job));
+})
+.WithName("GetTrainingJob").WithOpenApi().RequireAuthorization();
+
+
+// ==============================
+// Model Artifact APIs
+// ==============================
+app.MapPost("/api/training/jobs/{jobId:guid}/deploy",
+    async (Guid jobId, DeployModelRequest req, DeployModelUseCase useCase) =>
+    {
+        // jobId는 URL에서, TrainingJobId는 body에서 — 일치 여부 검증
+        if (req.TrainingJobId != jobId)
+            return Results.BadRequest(new { error = "jobId mismatch." });
+
+        try
+        {
+            var artifact = await useCase.ExecuteAsync(req);
+            return Results.Created($"/api/models/{artifact.Id}", artifact);
+        }
+        catch (ArgumentException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
+    })
+.WithName("DeployModel").WithOpenApi().RequireAuthorization(p => p.RequireRole("Admin"));
+
+app.MapGet("/api/models", async (IModelArtifactRepository repo) =>
+{
+    var artifacts = await repo.ListAsync();
+    return Results.Ok(artifacts.Select(DeployModelUseCase.ToDto));
+})
+.WithName("ListModels").WithOpenApi().RequireAuthorization();
+
+app.MapGet("/api/models/{id:guid}", async (Guid id, IModelArtifactRepository repo) =>
+{
+    var artifact = await repo.GetByIdAsync(id);
+    return artifact is null ? Results.NotFound() : Results.Ok(DeployModelUseCase.ToDto(artifact));
+})
+.WithName("GetModel").WithOpenApi().RequireAuthorization();
 
 
 app.Run();
