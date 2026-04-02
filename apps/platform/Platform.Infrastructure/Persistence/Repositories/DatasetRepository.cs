@@ -35,4 +35,17 @@ public sealed class DatasetRepository : IDatasetRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, ct);
     }
+
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
+    {
+        var rows = await _db.Datasets.Where(x => x.Id == id).ExecuteDeleteAsync(ct);
+        return rows > 0;
+    }
+
+    public async Task<Dataset> UpdateAsync(Dataset dataset, CancellationToken ct = default)
+    {
+        _db.Datasets.Update(dataset);
+        await _db.SaveChangesAsync(ct);
+        return dataset;
+    }
 }

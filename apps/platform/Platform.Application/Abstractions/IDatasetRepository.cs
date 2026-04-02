@@ -7,4 +7,6 @@ public interface IDatasetRepository
     Task<Dataset> AddAsync(Dataset dataset, CancellationToken ct = default);
     Task<IReadOnlyList<Dataset>> ListAsync(CancellationToken ct = default);
     Task<Dataset?> GetByIdAsync(Guid id, CancellationToken ct = default);
+    Task<bool> DeleteAsync(Guid id, CancellationToken ct = default);
+    Task<Dataset> UpdateAsync(Dataset dataset, CancellationToken ct = default);
 }

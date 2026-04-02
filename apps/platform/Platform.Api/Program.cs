@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,10 @@ using Platform.Infrastructure.Persistence;
 using Platform.Application.Abstractions;
 using Platform.Application.Dtos;
 using Platform.Application.Dtos.Auth;
+using Platform.Application.Dtos.Dataset;
 using Platform.Application.Services;
 
+using Platform.Infrastructure.BackgroundJobs;
 using Platform.Infrastructure.Persistence.Repositories;
 using Platform.Infrastructure.Security;
 
@@ -28,6 +31,15 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<DatasetService>();
 builder.Services.AddScoped<AuthService>();
+
+// Job 추적 (Singleton: 프로세스 생존 기간 동안 상태 유지)
+builder.Services.AddSingleton<IJobTracker, JobTracker>();
+
+// BackgroundService 큐 + 워커
+builder.Services.AddSingleton<DatasetValidationQueue>();
+builder.Services.AddSingleton<DatasetMergeQueue>();
+builder.Services.AddHostedService<DatasetValidationWorker>();
+builder.Services.AddHostedService<DatasetMergeWorker>();
 
 // -----------------------------
 // JWT 인증
@@ -109,7 +121,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" }))
 // -----------------------------
 app.MapGet("/db-check", async (ApplicationDbContext db) =>
 {
-    var canConnect = await db.Database.CanConnectAsync();
+    var canConnect    = await db.Database.CanConnectAsync();
     var userCount     = await db.Users.CountAsync();
     var datasetCount  = await db.Datasets.CountAsync();
     var jobCount      = await db.TrainingJobs.CountAsync();
@@ -134,7 +146,6 @@ app.MapPost("/api/auth/login", async (LoginRequest req, AuthService svc, HttpCon
     if (result is null)
         return Results.Unauthorized();
 
-    // Refresh Token → HttpOnly Cookie
     ctx.Response.Cookies.Append("refreshToken", result.AccessToken, new CookieOptions
     {
         HttpOnly = true,
@@ -190,20 +201,18 @@ app.MapPost("/api/auth/logout", async (HttpContext ctx, AuthService svc) =>
 // -----------------------------
 // Dataset APIs
 // -----------------------------
-app.MapPost("/api/datasets", async (CreateDatasetRequest req, DatasetService svc) =>
+app.MapPost("/api/datasets", async (CreateDatasetRequest req, DatasetService svc, ClaimsPrincipal user) =>
 {
-    var created = await svc.CreateAsync(req);
+    var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    var created = await svc.CreateAsync(req, userId);
     return Results.Created($"/api/datasets/{created.Id}", created);
 })
 .WithName("CreateDataset")
 .WithOpenApi()
-.RequireAuthorization();
+.RequireAuthorization(p => p.RequireRole("Admin"));
 
 app.MapGet("/api/datasets", async (DatasetService svc) =>
-{
-    var items = await svc.ListAsync();
-    return Results.Ok(items);
-})
+    Results.Ok(await svc.ListAsync()))
 .WithName("ListDatasets")
 .WithOpenApi()
 .RequireAuthorization();
@@ -214,6 +223,86 @@ app.MapGet("/api/datasets/{id:guid}", async (Guid id, DatasetService svc) =>
     return item is null ? Results.NotFound() : Results.Ok(item);
 })
 .WithName("GetDatasetById")
+.WithOpenApi()
+.RequireAuthorization();
+
+app.MapDelete("/api/datasets/{id:guid}", async (Guid id, DatasetService svc) =>
+{
+    var deleted = await svc.DeleteAsync(id);
+    return deleted ? Results.NoContent() : Results.NotFound();
+})
+.WithName("DeleteDataset")
+.WithOpenApi()
+.RequireAuthorization(p => p.RequireRole("Admin"));
+
+
+// -----------------------------
+// Dataset Validation APIs
+// -----------------------------
+app.MapPost("/api/datasets/{id:guid}/validate",
+    async (Guid id, DatasetService svc, DatasetValidationQueue queue, IJobTracker tracker) =>
+    {
+        var dataset = await svc.GetAsync(id);
+        if (dataset is null)
+            return Results.NotFound();
+
+        var jobId = tracker.Start(DatasetJobType.Validation);
+        await queue.EnqueueAsync(new ValidationWorkItem(jobId, id));
+
+        return Results.Accepted($"/api/datasets/validate/{jobId}", new { jobId });
+    })
+.WithName("ValidateDataset")
+.WithOpenApi()
+.RequireAuthorization(p => p.RequireRole("Admin"));
+
+app.MapGet("/api/datasets/validate/{jobId:guid}", (Guid jobId, IJobTracker tracker) =>
+{
+    var info = tracker.Get(jobId);
+    if (info is null) return Results.NotFound();
+
+    return Results.Ok(new JobStatusResponse(
+        info.JobId, info.Type.ToString(), info.Status.ToString(),
+        info.Progress, info.Error, info.ResultDatasetId,
+        info.StartedAt, info.FinishedAt));
+})
+.WithName("GetValidationStatus")
+.WithOpenApi()
+.RequireAuthorization();
+
+
+// -----------------------------
+// Dataset Merge APIs
+// -----------------------------
+app.MapPost("/api/datasets/merge",
+    async (MergeDatasetRequest req, DatasetMergeQueue queue, IJobTracker tracker, ClaimsPrincipal user) =>
+    {
+        if (req.DatasetIds is null || req.DatasetIds.Count < 2)
+            return Results.BadRequest("At least 2 dataset IDs are required.");
+
+        if (string.IsNullOrWhiteSpace(req.NewName))
+            return Results.BadRequest("NewName is required.");
+
+        var userId = Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var jobId  = tracker.Start(DatasetJobType.Merge);
+        await queue.EnqueueAsync(new MergeWorkItem(jobId, req.DatasetIds, req.NewName, req.Description, userId));
+
+        return Results.Accepted($"/api/datasets/merge/{jobId}", new { jobId });
+    })
+.WithName("MergeDatasets")
+.WithOpenApi()
+.RequireAuthorization(p => p.RequireRole("Admin"));
+
+app.MapGet("/api/datasets/merge/{jobId:guid}", (Guid jobId, IJobTracker tracker) =>
+{
+    var info = tracker.Get(jobId);
+    if (info is null) return Results.NotFound();
+
+    return Results.Ok(new JobStatusResponse(
+        info.JobId, info.Type.ToString(), info.Status.ToString(),
+        info.Progress, info.Error, info.ResultDatasetId,
+        info.StartedAt, info.FinishedAt));
+})
+.WithName("GetMergeStatus")
 .WithOpenApi()
 .RequireAuthorization();
 
