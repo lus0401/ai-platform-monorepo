@@ -18,6 +18,7 @@ using Platform.Infrastructure.BackgroundJobs;
 using Platform.Infrastructure.Persistence.Repositories;
 using Platform.Infrastructure.Security;
 using Platform.Infrastructure.Storage;
+using Platform.Infrastructure.WebSockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,9 @@ builder.Services.AddScoped<MergeDatasetUseCase>();
 
 // Job 추적 (Singleton: 프로세스 생존 기간 동안 상태 유지)
 builder.Services.AddSingleton<IJobTracker, JobTracker>();
+
+// WebSocket 연결 관리
+builder.Services.AddSingleton<TrainingWebSocketManager>();
 
 // BackgroundService 큐 + 워커
 builder.Services.AddSingleton<DatasetValidationQueue>();
@@ -121,6 +125,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseWebSockets();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -370,6 +375,76 @@ app.MapGet("/api/models/{id:guid}", async (Guid id, IModelArtifactRepository rep
     return artifact is null ? Results.NotFound() : Results.Ok(DeployModelUseCase.ToDto(artifact));
 })
 .WithName("GetModel").WithOpenApi().RequireAuthorization();
+
+
+// ==============================
+// WebSocket — 학습 진행률 스트리밍
+// ==============================
+app.Map("/ws/training/{jobId:guid}", async (Guid jobId, HttpContext ctx, TrainingWebSocketManager wsManager) =>
+{
+    if (!ctx.WebSockets.IsWebSocketRequest)
+    {
+        ctx.Response.StatusCode = StatusCodes.Status400BadRequest;
+        return;
+    }
+
+    var ws = await ctx.WebSockets.AcceptWebSocketAsync();
+    wsManager.Add(jobId, ws);
+
+    // 클라이언트가 연결을 끊을 때까지 대기
+    var buffer = new byte[64];
+    try
+    {
+        while (ws.State == System.Net.WebSockets.WebSocketState.Open)
+        {
+            var result = await ws.ReceiveAsync(buffer, ctx.RequestAborted);
+            if (result.MessageType == System.Net.WebSockets.WebSocketMessageType.Close)
+                break;
+        }
+    }
+    catch (OperationCanceledException) { }
+    finally
+    {
+        wsManager.Remove(jobId, ws);
+        if (ws.State == System.Net.WebSockets.WebSocketState.Open)
+            await ws.CloseAsync(
+                System.Net.WebSockets.WebSocketCloseStatus.NormalClosure,
+                "Closed", CancellationToken.None);
+    }
+});
+
+// Python AI 서버 → .NET: 학습 진행률 수신 후 WebSocket으로 브라우저에 중계
+app.MapPost("/api/internal/training/{jobId:guid}/progress",
+    async (Guid jobId, TrainingProgressDto progress, TrainingWebSocketManager wsManager, ITrainingJobRepository repo) =>
+    {
+        var job = await repo.GetByIdAsync(jobId);
+        if (job is null) return Results.NotFound();
+
+        // DB 업데이트
+        job.Progress     = progress.Progress;
+        job.CurrentEpoch = progress.CurrentEpoch;
+        job.Status       = progress.Status switch
+        {
+            "Succeeded" => Platform.Domain.Enums.JobStatus.Succeeded,
+            "Failed"    => Platform.Domain.Enums.JobStatus.Failed,
+            _           => Platform.Domain.Enums.JobStatus.Running,
+        };
+        if (job.Status == Platform.Domain.Enums.JobStatus.Running && job.StartedAtUtc is null)
+            job.StartedAtUtc = DateTime.UtcNow;
+        if (job.Status is Platform.Domain.Enums.JobStatus.Succeeded or Platform.Domain.Enums.JobStatus.Failed)
+            job.FinishedAtUtc = DateTime.UtcNow;
+
+        await repo.UpdateAsync(job);
+
+        // WebSocket 브로드캐스트
+        var message = System.Text.Json.JsonSerializer.Serialize(progress);
+        await wsManager.BroadcastAsync(jobId, message);
+
+        return Results.NoContent();
+    })
+.WithName("ReceiveTrainingProgress")
+.WithOpenApi()
+.AllowAnonymous(); // Python 서버는 내부망에서만 호출 (V2에서 API Key 인증 추가 예정)
 
 
 app.Run();
